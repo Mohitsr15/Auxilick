@@ -1,942 +1,1331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="p:domain_verify"
-    content="cb9b0cf7100c8648af950d8df6b232ef"/>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>auxilick | Curated Finds & Trends</title>
-  <meta name="description" content="Discover viral finds, aesthetic home essentials, and trending Amazon products curated by auxilick.">
-  
-  <!-- Google Fonts & Lucide Icons -->
+  <meta name="p:domain_verify" 
+    content="cb9b0cf7100c8648af950d8df6b232ef"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>auxilick — Aesthetic Pinterest Finds & Deals</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Inter Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
 
-  <style>
-    :root {
-      --primary: #E60023; /* Pinterest red accent */
-      --primary-hover: #b8001c;
-      --bg-page: #0f1115;
-      --bg-surface: #181b21;
-      --bg-card: #1e222a;
-      --border: #2a2f3a;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --badge-bg: rgba(230, 0, 35, 0.15);
-      --badge-text: #ff4d67;
-      --amazon-btn: #f59e0b;
-      --amazon-hover: #d97706;
-      --radius: 16px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-page);
-      color: var(--text-main);
-      line-height: 1.5;
-      padding-bottom: 60px;
-    }
-
-    /* Top Compliance Banner */
-    .disclosure-banner {
-      background: #14171d;
-      border-bottom: 1px solid var(--border);
-      text-align: center;
-      padding: 8px 16px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-    .disclosure-banner span {
-      color: #cbd5e1;
-      font-weight: 600;
-    }
-
-    /* Header */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(14px);
-      background: rgba(15, 17, 21, 0.88);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 24px;
-    }
-    .nav-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    /* Brand Logo */
-    .brand-logo {
-      cursor: pointer;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: #fff;
-    }
-    .brand-logo .dot {
-      color: var(--primary);
-    }
-
-    /* Search Bar */
-    .search-box {
-      flex: 1;
-      max-width: 550px;
-      position: relative;
-    }
-    .search-box input {
-      width: 100%;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      padding: 10px 16px 10px 40px;
-      border-radius: 9999px;
-      color: #fff;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border 0.2s;
-    }
-    .search-box input:focus {
-      border-color: var(--primary);
-    }
-    .search-box i {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      width: 16px;
-      height: 16px;
-    }
-
-    /* Categories Bar */
-    .categories-bar {
-      max-width: 1400px;
-      margin: 20px auto 10px;
-      padding: 0 24px;
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .categories-bar::-webkit-scrollbar {
-      display: none;
-    }
-    .cat-pill {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 8px 18px;
-      border-radius: 9999px;
-      cursor: pointer;
-      white-space: nowrap;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-    .cat-pill.active, .cat-pill:hover {
-      background: #fff;
-      color: #000;
-      border-color: #fff;
-    }
-
-    /* Masonry Grid */
-    .feed-container {
-      max-width: 1400px;
-      margin: 20px auto;
-      padding: 0 24px;
-    }
-    .masonry-grid {
-      column-count: 5;
-      column-gap: 20px;
-    }
-    @media (max-width: 1200px) { .masonry-grid { column-count: 4; } }
-    @media (max-width: 900px) { .masonry-grid { column-count: 3; } }
-    @media (max-width: 600px) { .masonry-grid { column-count: 2; column-gap: 12px; } }
-
-    /* Pin Card */
-    .pin-card {
-      break-inside: avoid;
-      margin-bottom: 20px;
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      position: relative;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .pin-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgba(0,0,0,0.4);
-    }
-    .pin-img-wrap {
-      position: relative;
-      width: 100%;
-      background: #252a34;
-    }
-    .pin-img-wrap img {
-      width: 100%;
-      display: block;
-      object-fit: cover;
-    }
-    .badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(15, 17, 21, 0.85);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #fff;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      backdrop-filter: blur(8px);
-      text-transform: uppercase;
-    }
-    .pin-info {
-      padding: 12px 14px;
-    }
-    .pin-title {
-      font-size: 0.92rem;
-      font-weight: 600;
-      color: #fff;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      line-height: 1.35;
-    }
-    .pin-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 10px;
-    }
-    .pin-price {
-      font-weight: 800;
-      color: #22c55e;
-      font-size: 1.05rem;
-    }
-    .btn-amazon-quick {
-      background: var(--amazon-btn);
-      color: #111;
-      padding: 6px 12px;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      text-decoration: none;
-      transition: background 0.2s;
-    }
-    .btn-amazon-quick:hover {
-      background: var(--amazon-hover);
-    }
-
-    /* Modal (Deep Link Target) */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-      padding: 16px;
-    }
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .modal-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      max-width: 800px;
-      width: 100%;
-      overflow: hidden;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      position: relative;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-    }
-    @media (max-width: 720px) {
-      .modal-card {
-        grid-template-columns: 1fr;
-        max-height: 90vh;
-        overflow-y: auto;
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: '#E60023', // Pinterest signature crimson
+            brandDark: '#C9001D',
+            brandSlate: '#111827',
+            accentAmber: '#FF9900',
+          }
+        }
       }
     }
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: #fff;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-    }
-    .modal-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      min-height: 360px;
-      background: #111;
-    }
-    .modal-body {
-      padding: 32px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .modal-cat {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--primary);
-      letter-spacing: 1px;
-    }
-    .modal-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin: 8px 0 16px;
-      line-height: 1.3;
-    }
-    .modal-price-wrap {
-      margin-bottom: 24px;
-    }
-    .modal-price {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: #22c55e;
-    }
-    .modal-amazon-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: #f59e0b;
-      color: #000;
-      font-weight: 800;
-      font-size: 1.05rem;
-      padding: 16px 24px;
-      border-radius: 14px;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.1s;
-      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.3);
-    }
-    .modal-amazon-btn:hover {
-      background: #d97706;
-      transform: translateY(-2px);
-    }
-    .modal-guarantee {
-      margin-top: 14px;
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      text-align: center;
-    }
+  </script>
 
-    /* Admin Floating Dashboard */
-    .admin-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.88);
-      z-index: 200;
+  <style>
+    /* Responsive Pinterest Masonry layout using CSS multi-columns */
+    .masonry-columns {
+      column-count: 2;
+      column-gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      .masonry-columns { column-count: 2; column-gap: 1.25rem; }
+    }
+    @media (min-width: 768px) {
+      .masonry-columns { column-count: 3; column-gap: 1.25rem; }
+    }
+    @media (min-width: 1024px) {
+      .masonry-columns { column-count: 4; column-gap: 1.5rem; }
+    }
+    .pin-card {
+      break-inside: avoid;
+      margin-bottom: 1.25rem;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
       display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
     }
-    .admin-modal.open {
-      display: flex;
-    }
-    .admin-box {
-      background: #161920;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      max-width: 900px;
-      width: 100%;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .admin-header {
-      padding: 18px 24px;
-      background: #111318;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .admin-content {
-      padding: 24px;
-      overflow-y: auto;
-    }
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .stat-card {
-      background: #1d212a;
-      padding: 16px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-    }
-    .stat-card .val {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: #fff;
-      margin-top: 4px;
-    }
-    .stat-card .lbl {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-    .admin-form {
-      background: #1d212a;
-      padding: 18px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      margin-bottom: 24px;
-    }
-    .admin-form h3 {
-      font-size: 1rem;
-      margin-bottom: 14px;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .admin-input {
-      width: 100%;
-      background: #12141a;
-      border: 1px solid var(--border);
-      padding: 10px 14px;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 0.85rem;
-      outline: none;
-    }
-    .admin-input:focus {
-      border-color: #3b82f6;
-    }
-    .btn-submit {
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 700;
-      margin-top: 12px;
-    }
-    .btn-copy-pin {
-      background: #3b82f6;
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .btn-copy-pin:hover {
-      background: #2563eb;
-    }
-    .btn-del {
-      background: #ef4444;
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-      text-align: left;
-    }
-    th, td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    th {
-      color: var(--text-muted);
-    }
-
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #22c55e;
-      color: #000;
-      font-weight: 700;
-      padding: 12px 20px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-      z-index: 300;
-      display: none;
-      align-items: center;
-      gap: 8px;
-    }
-    .toast.show {
-      display: flex;
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
 </head>
-<body>
+<body class="bg-[#F8F9FA] text-stone-900 font-sans antialiased min-h-screen flex flex-col selection:bg-rose-100 selection:text-rose-800">
 
-  <!-- FTC / Affiliate Disclosure -->
-  <div class="disclosure-banner">
-    As an Amazon Associate, <span>auxilick</span> earns from qualifying purchases. Outbound links direct safely to official Amazon product pages.
+  <!-- 1. COMPLIANCE BANNER -->
+  <div class="bg-stone-900 text-stone-300 text-[11px] sm:text-xs py-2 px-4 text-center border-b border-stone-800 flex items-center justify-center gap-1.5 select-none">
+    <i class="ph-bold ph-shield-check text-amber-400"></i>
+    <span><strong>Amazon Affiliate Disclosure:</strong> As an Amazon Associate, <strong>auxilick</strong> earns from qualifying purchases. Prices & availability subject to change.</span>
   </div>
 
-  <!-- Navigation -->
-  <header>
-    <div class="nav-container">
-      <div class="brand-logo" id="brandLogo">
-        auxilick<span class="dot">.</span>
+  <!-- 2. MAIN HEADER -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-stone-200 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+      <!-- Brand Logo (Secret 5x Click to open Admin) -->
+      <div id="brandLogoTrigger" class="flex items-center gap-2.5 cursor-pointer select-none group" title="auxilick curated finds">
+        <div class="w-9 h-9 rounded-full bg-brand text-white flex items-center justify-center shadow-md shadow-rose-200 group-hover:scale-105 active:scale-95 transition-transform">
+          <i class="ph-bold ph-pinterest-logo text-xl"></i>
+        </div>
+        <div class="leading-none">
+          <span class="text-xl font-black tracking-tight text-stone-900">auxi<span class="text-brand">lick</span></span>
+          <span class="hidden sm:inline-block text-[9px] font-bold uppercase tracking-widest text-stone-400 ml-1.5 bg-stone-100 px-1.5 py-0.5 rounded">Curated</span>
+        </div>
       </div>
 
-      <div class="search-box">
-        <i data-lucide="search"></i>
-        <input type="text" id="searchInput" placeholder="Search curated viral finds, decor, tech...">
+      <!-- Live Search Bar -->
+      <div id="searchWrap" class="flex-1 max-w-lg relative">
+        <i class="ph-bold ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-base"></i>
+        <input 
+          id="searchInput" 
+          type="text" 
+          placeholder="Search aesthetic finds, desk gear, decor..." 
+          class="w-full bg-stone-100 border border-transparent focus:border-stone-300 focus:bg-white text-xs sm:text-sm rounded-full pl-9 pr-9 py-2 outline-none transition"
+        />
+        <button id="clearSearchBtn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700">
+          <i class="ph-bold ph-x-circle text-base"></i>
+        </button>
       </div>
+
+      <!-- Outbound Status Indicator -->
+      <div class="hidden md:flex items-center gap-1.5 text-xs text-stone-500 font-medium">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Prime Deals Active</span>
+      </div>
+    </div>
+
+    <!-- Category Pill Filter Bar -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 pb-2.5 pt-1 overflow-x-auto hide-scrollbar flex items-center gap-2" id="categoryContainer">
+      <!-- Generated via JS -->
     </div>
   </header>
 
-  <!-- Categories -->
-  <div class="categories-bar" id="categoryBar">
-    <button class="cat-pill active" data-category="all">All Finds</button>
-    <button class="cat-pill" data-category="Aesthetic Room">Aesthetic Room</button>
-    <button class="cat-pill" data-category="Smart Gadgets">Smart Gadgets</button>
-    <button class="cat-pill" data-category="Desk Setup">Desk Setup</button>
-    <button class="cat-pill" data-category="Kitchen & Home">Kitchen & Home</button>
-  </div>
+  <!-- 3. HERO CALLOUT -->
+  <section id="heroSection" class="max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-2 w-full">
+    <div class="bg-gradient-to-r from-rose-50 via-white to-amber-50/50 border border-rose-100/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-white shadow-sm border border-rose-100 flex items-center justify-center text-brand text-2xl flex-shrink-0">
+          <i class="ph-fill ph-sparkle"></i>
+        </div>
+        <div>
+          <h1 class="text-sm sm:text-base font-extrabold text-stone-900">
+            Trending Finds from Pinterest — Curated by auxilick
+          </h1>
+          <p class="text-xs sm:text-sm text-stone-600 mt-0.5">
+            Tap any card or click <span class="font-semibold text-stone-900">"Get on Amazon"</span> to view real-time discounts and Prime shipping.
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 text-xs font-semibold text-stone-700 bg-white/80 border border-stone-200 px-3 py-1.5 rounded-xl shadow-xs flex-shrink-0">
+        <i class="ph-bold ph-check-circle text-emerald-600 text-sm"></i> 100% Direct Verified Links
+      </div>
+    </div>
+  </section>
 
-  <!-- Main Feed -->
-  <main class="feed-container">
-    <div class="masonry-grid" id="masonryFeed"></div>
+  <!-- 4. PINS FEED CONTAINER -->
+  <main id="feedMain" class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-5 w-full">
+    <div class="flex items-center justify-between mb-4 text-xs text-stone-500">
+      <div>
+        Showing <span id="pinCount" class="font-bold text-stone-900">0</span> verified recommendations
+      </div>
+      <div class="flex items-center gap-2 text-[11px] text-stone-400">
+        <span>Click photo for preview</span>
+      </div>
+    </div>
+
+    <!-- Masonry Columns Grid -->
+    <div id="pinsGrid" class="masonry-columns"></div>
+
+    <!-- Empty Search State -->
+    <div id="noPinsFound" class="hidden text-center py-20 px-4">
+      <div class="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-3 text-stone-400 text-3xl">
+        <i class="ph-bold ph-magnifying-glass"></i>
+      </div>
+      <h3 class="text-base font-bold text-stone-800">No matching pins found</h3>
+      <p class="text-xs text-stone-500 max-w-sm mx-auto mt-1">Try another keyword or reset the category filter.</p>
+      <button id="resetFiltersBtn" class="mt-4 px-4 py-2 bg-stone-900 text-white text-xs font-bold rounded-full hover:bg-stone-800 transition">
+        Reset All Filters
+      </button>
+    </div>
   </main>
 
-  <!-- Product Modal (Deep Link Target) -->
-  <div class="modal-overlay" id="productModal">
-    <div class="modal-card">
-      <button class="modal-close" id="modalClose"><i data-lucide="x"></i></button>
-      <img id="modalImg" class="modal-img" src="" alt="Product">
-      <div class="modal-body">
-        <div>
-          <span class="modal-cat" id="modalCat">CATEGORY</span>
-          <h2 class="modal-title" id="modalTitle">Product Title</h2>
-          <div class="modal-price-wrap">
-            <span class="modal-price" id="modalPrice">$0.00</span>
+  <!-- 4B. SINGLE PRODUCT PAGE (opens when the link has ?p=product-name). Filled in by JS. -->
+  <section id="productPage" class="hidden flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-6 w-full"></section>
+
+  <!-- 5. FOOTER -->
+  <footer class="bg-white border-t border-stone-200 mt-12 py-8 text-stone-500 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center space-y-3">
+      <div class="flex items-center justify-center gap-2 font-black text-stone-900 text-base">
+        <div class="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center text-xs">
+          <i class="ph-bold ph-pinterest-logo"></i>
+        </div>
+        <span>auxilick</span>
+      </div>
+      <p class="max-w-xl mx-auto text-stone-400 text-[11px] leading-relaxed">
+        Amazon, the Amazon logo, and Amazon Prime are trademarks of Amazon.com, Inc. or its affiliates. auxilick participates in affiliate marketing programs designed to provide a means for sites to earn advertising fees by linking to Amazon.
+      </p>
+      <div class="pt-2 text-stone-400 text-[11px]">
+        © <span id="currentYear"></span> auxilick. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- 6. PRODUCT QUICK-VIEW MODAL (Public) -->
+  <div id="quickViewModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative transform transition-all">
+      <button id="closeQuickViewBtn" class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-stone-700 flex items-center justify-center shadow-md">
+        <i class="ph-bold ph-x text-base"></i>
+      </button>
+      
+      <div class="relative bg-stone-100 h-72 sm:h-80 overflow-hidden flex items-center justify-center">
+        <img id="modalImg" src="" alt="Product" class="w-full h-full object-cover" />
+        <span id="modalBadge" class="absolute top-3 left-3 bg-white/95 backdrop-blur font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm text-stone-900"></span>
+      </div>
+
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-1">
+          <span id="modalCategory" class="text-xs font-bold text-brand uppercase tracking-wider"></span>
+          <span id="modalPrice" class="text-xl font-black text-stone-900"></span>
+        </div>
+        <h3 id="modalTitle" class="text-base font-bold text-stone-950 mb-2 leading-snug"></h3>
+        <p id="modalDesc" class="text-stone-600 text-xs mb-5 leading-relaxed"></p>
+
+        <div class="bg-stone-50 rounded-2xl p-3.5 mb-5 border border-stone-200/60 text-xs text-stone-700 space-y-2">
+          <div class="flex items-center gap-2">
+            <i class="ph-bold ph-truck text-emerald-600 text-sm"></i> Free Amazon Prime Delivery Eligible
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="ph-bold ph-arrow-counter-clockwise text-blue-600 text-sm"></i> Official Amazon 30-Day Easy Returns
           </div>
         </div>
-        <div>
-          <a id="modalAmazonBtn" href="#" target="_blank" rel="noopener noreferrer nofollow" class="modal-amazon-btn">
-            <i data-lucide="external-link"></i> Check Price on Amazon
-          </a>
-          <p class="modal-guarantee">Official Amazon verified product • Safe checkout</p>
-        </div>
+
+        <button 
+          id="modalAffiliateCTA" 
+          class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-bold text-sm text-center flex items-center justify-center gap-2 shadow-md shadow-amber-200/60 transition active:scale-95"
+        >
+          <span>Get on Amazon</span>
+          <i class="ph-bold ph-arrow-up-right text-base"></i>
+        </button>
+        <p class="text-[10px] text-center text-stone-400 mt-2.5">Opens verified Amazon product listing in a new tab</p>
       </div>
     </div>
   </div>
 
-  <!-- Hidden Admin Panel -->
-  <div class="admin-modal" id="adminModal">
-    <div class="admin-box">
-      <div class="admin-header">
-        <h2 style="font-size:1.1rem; font-weight:800;">auxilick Admin Hub</h2>
-        <button id="adminClose" style="background:none; border:none; color:#fff; cursor:pointer;"><i data-lucide="x"></i></button>
+  <!-- 7. SECRET PASSCODE PROMPT MODAL (Completely Hidden) -->
+  <div id="secretAuthModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xs w-full p-6 text-center shadow-2xl relative border border-stone-100">
+      <div class="w-12 h-12 rounded-2xl bg-stone-900 text-amber-400 flex items-center justify-center mx-auto mb-3 text-2xl shadow-md">
+        <i class="ph-bold ph-key"></i>
       </div>
-      <div class="admin-content">
-        <!-- Live Traffic Stats -->
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="lbl">Page Views</div>
-            <div class="val" id="statViews">0</div>
+      <h3 class="font-extrabold text-stone-900 text-base">auxilick Console</h3>
+      <p class="text-xs text-stone-500 mt-1 mb-4">Enter secret master PIN to access analytics and products.</p>
+      
+      <form id="secretAuthForm" class="space-y-3">
+        <input 
+          type="password" 
+          id="secretPinInput" 
+          placeholder="••••••••" 
+          class="w-full py-2.5 px-3 rounded-xl border border-stone-300 text-center tracking-widest text-base font-bold outline-none focus:border-stone-900 transition"
+          required
+        />
+        <div id="authErrorMsg" class="text-brand text-xs font-semibold hidden">Incorrect PIN. Try again.</div>
+        <div class="flex gap-2">
+          <button type="button" id="cancelAuthBtn" class="w-1/2 py-2.5 rounded-xl bg-stone-100 text-stone-600 font-bold text-xs hover:bg-stone-200 transition">Cancel</button>
+          <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-stone-900 text-white font-bold text-xs hover:bg-stone-800 transition">Unlock</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 8. SECRET ADMIN OVERLAY DASHBOARD -->
+  <div id="secretAdminDashboard" class="fixed inset-0 z-50 bg-stone-100 overflow-y-auto hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 min-h-screen flex flex-col">
+      <!-- Admin Top Bar -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-stone-200">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-md bg-stone-900 text-amber-400 text-[10px] font-black uppercase tracking-wider">Internal Admin</span>
+            <h2 class="text-2xl font-black text-stone-900">auxilick Control Center</h2>
           </div>
-          <div class="stat-card">
-            <div class="lbl">Amazon Clicks</div>
-            <div class="val" id="statClicks">0</div>
+          <p class="text-xs text-stone-500 mt-0.5">Private traffic analytics & Amazon affiliate product catalog.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btnOpenNewProductModal" class="px-4 py-2.5 rounded-xl bg-brand hover:bg-brandDark text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm transition">
+            <i class="ph-bold ph-plus-circle text-base"></i> Add New Product
+          </button>
+          <button id="btnExitAdmin" class="px-4 py-2.5 rounded-xl bg-white border border-stone-300 hover:bg-stone-50 text-stone-700 font-bold text-xs sm:text-sm flex items-center gap-1.5 transition">
+            <i class="ph-bold ph-sign-out"></i> Exit Admin
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Total Storefront Visits</span>
+            <h3 id="statVisits" class="text-2xl font-black text-stone-900 mt-1">0</h3>
+            <p class="text-[11px] text-emerald-600 mt-0.5 font-medium flex items-center gap-1">
+              <i class="ph-bold ph-arrow-up"></i> Pinterest & direct traffic
+            </p>
           </div>
-          <div class="stat-card">
-            <div class="lbl">Click-Through (CTR)</div>
-            <div class="val" id="statCTR">0%</div>
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl">
+            <i class="ph-bold ph-eye"></i>
           </div>
         </div>
 
-        <!-- Add Product Form -->
-        <div class="admin-form">
-          <h3>Add New Product Pin</h3>
-          <form id="addProductForm">
-            <div class="form-grid">
-              <input type="text" id="newTitle" placeholder="Product Title (e.g., Sunset Lamp)" class="admin-input" required>
-              <input type="text" id="newCategory" placeholder="Category (e.g., Aesthetic Room)" class="admin-input" required>
-              <input type="text" id="newPrice" placeholder="Price (e.g., $24.99)" class="admin-input" required>
-              <input type="text" id="newBadge" placeholder="Badge (e.g., Viral, Best Seller)" class="admin-input">
-              <input type="url" id="newImage" placeholder="Image URL (Unsplash or direct image link)" class="admin-input" required style="grid-column: span 2;">
-              <input type="url" id="newAmazonLink" placeholder="Your Amazon Affiliate Link" class="admin-input" required style="grid-column: span 2;">
+        <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Amazon Outbound Clicks</span>
+            <h3 id="statClicks" class="text-2xl font-black text-stone-900 mt-1">0</h3>
+            <p class="text-[11px] text-amber-600 mt-0.5 font-medium flex items-center gap-1">
+              <i class="ph-bold ph-shopping-bag"></i> Forwarded buyers
+            </p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl">
+            <i class="ph-bold ph-cursor-click"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Click-Through Rate (CTR)</span>
+            <h3 id="statCTR" class="text-2xl font-black text-stone-900 mt-1">0.0%</h3>
+            <p class="text-[11px] text-stone-500 mt-0.5 font-medium">Amazon Clicks / Visits</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl">
+            <i class="ph-bold ph-chart-line-up"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Active Pin Products</span>
+            <h3 id="statProductCount" class="text-2xl font-black text-stone-900 mt-1">0</h3>
+            <p class="text-[11px] text-stone-500 mt-0.5 font-medium">Visible on masonry</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-rose-50 text-brand flex items-center justify-center text-2xl">
+            <i class="ph-bold ph-squares-four"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Performers & Quick Actions -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Top Performing Pins -->
+        <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm lg:col-span-1 flex flex-col">
+          <h4 class="font-bold text-sm text-stone-900 mb-3 flex items-center gap-2">
+            <i class="ph-fill ph-trophy text-amber-500 text-base"></i> Most Clicked Amazon Products
+          </h4>
+          <div id="topPinsContainer" class="space-y-2.5 flex-1">
+            <!-- Dynamic via JS -->
+          </div>
+        </div>
+
+        <!-- Strategy & Database Controls -->
+        <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm lg:col-span-2 flex flex-col justify-between">
+          <div>
+            <h4 class="font-bold text-sm text-stone-900 mb-2 flex items-center gap-2">
+              <i class="ph-bold ph-lock-key-open text-brand"></i> Secret Access Information
+            </h4>
+            <div class="text-xs text-stone-600 space-y-1.5 leading-relaxed bg-stone-50 p-3.5 rounded-xl border border-stone-200/60 mb-4">
+              <p>• <strong>Trigger 1 (Secret Shortcut):</strong> Press <kbd class="px-1.5 py-0.5 bg-white border rounded shadow-xs text-stone-800 font-mono">Ctrl + Shift + A</kbd> (or <kbd class="px-1.5 py-0.5 bg-white border rounded shadow-xs text-stone-800 font-mono">Cmd + Shift + A</kbd> on Mac) anywhere on the page.</p>
+              <p>• <strong>Trigger 2 (Logo Tap):</strong> Rapidly click/tap the <strong>auxilick</strong> logo in the top-left <strong>5 times</strong> in a row.</p>
+              <p>• <strong>Trigger 3 (URL Hash):</strong> Load the site with <code class="px-1 py-0.5 bg-white border rounded text-rose-700 font-mono">#admin</code> or <code class="px-1 py-0.5 bg-white border rounded text-rose-700 font-mono">?admin=true</code> in the address bar.</p>
+              <p>• <strong>Master PIN:</strong> <code class="font-bold text-stone-900 bg-amber-100 px-1.5 py-0.5 rounded">auxilick2026</code></p>
             </div>
-            <button type="submit" class="btn-submit">+ Add Pin to Website</button>
-          </form>
+          </div>
+
+          <div class="pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <span class="text-stone-400">All data automatically saves to your browser's persistent storage.</span>
+            <div class="flex items-center gap-2">
+              <button id="btnCopyCode" class="px-3.5 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-stone-900 font-bold flex items-center gap-1.5 transition">
+                <i class="ph-bold ph-code"></i> Copy publish code
+              </button>
+              <button id="btnExportJSON" class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold flex items-center gap-1.5 transition">
+                <i class="ph-bold ph-download-simple"></i> Backup JSON
+              </button>
+              <button id="btnResetAnalytics" class="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-brand font-bold flex items-center gap-1.5 transition">
+                <i class="ph-bold ph-arrow-counter-clockwise"></i> Reset Analytics
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manage Products Table -->
+      <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex-1 flex flex-col">
+        <div class="p-4 sm:p-5 border-b border-stone-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <h3 class="font-bold text-base text-stone-900">auxilick Product Catalog</h3>
+            <p class="text-xs text-stone-500">Add, edit, or remove products and monitor affiliate outbound conversions.</p>
+          </div>
+          <div class="relative w-full sm:w-64">
+            <input 
+              id="adminSearchInput" 
+              type="text" 
+              placeholder="Search table products..." 
+              class="w-full bg-stone-100 text-xs rounded-xl pl-8 pr-3 py-2 border border-transparent focus:border-stone-300 focus:bg-white outline-none"
+            />
+            <i class="ph-bold ph-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-stone-400 text-xs"></i>
+          </div>
         </div>
 
-        <!-- Manage Catalog & Copy Pinterest Link -->
-        <div style="background:#1d212a; padding:18px; border-radius:14px; border:1px solid var(--border);">
-          <h3 style="margin-bottom:12px;">Active Products & Pinterest Links</h3>
-          <div style="overflow-x:auto;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Pinterest Deep Link</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="adminProductTable"></tbody>
-            </table>
-          </div>
+        <div class="overflow-x-auto flex-1">
+          <table class="w-full text-left text-xs text-stone-600">
+            <thead class="bg-stone-50 text-stone-700 uppercase font-bold text-[10px] tracking-wider border-b border-stone-200">
+              <tr>
+                <th class="px-4 py-3">Product</th>
+                <th class="px-4 py-3">Category</th>
+                <th class="px-4 py-3">Price</th>
+                <th class="px-4 py-3">Badge</th>
+                <th class="px-4 py-3 text-center">Amazon Clicks</th>
+                <th class="px-4 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody" class="divide-y divide-stone-100">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div class="toast" id="toast">
-    <i data-lucide="check"></i> <span id="toastMsg">Link copied to clipboard!</span>
+  <!-- 9. ADD / EDIT PRODUCT MODAL (Admin) -->
+  <div id="productEditorModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative max-h-[92vh] flex flex-col">
+      <div class="p-5 border-b border-stone-200 flex justify-between items-center bg-stone-50">
+        <div>
+          <h3 id="productEditorTitle" class="font-bold text-base text-stone-900">Add Pin Product</h3>
+          <p class="text-[11px] text-stone-500">Configure your Pinterest aesthetic item and Amazon link.</p>
+        </div>
+        <button id="closeProductEditorBtn" class="text-stone-400 hover:text-stone-700">
+          <i class="ph-bold ph-x text-lg"></i>
+        </button>
+      </div>
+
+      <form id="productEditorForm" class="p-5 overflow-y-auto space-y-4 text-xs">
+        <input type="hidden" id="editProductId" />
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Product Title *</label>
+          <input 
+            type="text" 
+            id="fieldTitle" 
+            required 
+            placeholder="e.g. Minimalist Wooden Desk Shelf Riser"
+            class="w-full p-2.5 rounded-xl border border-stone-300 focus:border-stone-900 outline-none text-xs"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Category *</label>
+            <input 
+              type="text" 
+              id="fieldCategory" 
+              required 
+              placeholder="e.g. Desk Setup" 
+              list="categoryOptionsList"
+              class="w-full p-2.5 rounded-xl border border-stone-300 focus:border-stone-900 outline-none text-xs"
+            />
+            <datalist id="categoryOptionsList">
+              <option value="Home & Kitchen">
+              <option value="Tech & Gadgets">
+              <option value="Fashion & Style">
+              <option value="Beauty & Care">
+              <option value="Desk Setup">
+            </datalist>
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Display Price *</label>
+            <input 
+              type="text" 
+              id="fieldPrice" 
+              required 
+              placeholder="e.g. $42.00"
+              class="w-full p-2.5 rounded-xl border border-stone-300 focus:border-stone-900 outline-none text-xs"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Badge Tag</label>
+            <input 
+              type="text" 
+              id="fieldBadge" 
+              placeholder="e.g. Viral Pin, Must Have, Amazon Choice"
+              class="w-full p-2.5 rounded-xl border border-stone-300 focus:border-stone-900 outline-none text-xs"
+            />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Click Count</label>
+            <input 
+              type="number" 
+              id="fieldClicks" 
+              min="0" 
+              value="0"
+              class="w-full p-2.5 rounded-xl border border-stone-300 focus:border-stone-900 outline-none text-xs"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Image URL *</label>
+          <input 
+            type="url" 
+            id="fieldImage" 
+            required 
+            placeholder="https://images.unsplash.com/... or your pin photo URL"
+            class="w-full p-2.5 rounded-xl border border-stone-300 focus:border-stone-900 outline-none text-xs"
+          />
+          <span class="text-[10px] text-stone-400 mt-0.5 block">Vertical Pinterest aspect ratio images look best.</span>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Amazon Affiliate URL *</label>
+          <input 
+            type="url" 
+            id="fieldAffiliateUrl" 
+            required 
+            placeholder="https://www.amazon.com/dp/B0XXXXXX?tag=auxilick-20"
+            class="w-full p-2.5 rounded-xl border border-stone-300 focus:border-stone-900 outline-none text-xs"
+          />
+          <span class="text-[10px] text-stone-400 mt-0.5 block">Ensure your Amazon Associates tag is included in the URL.</span>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Description</label>
+          <textarea 
+            id="fieldDesc" 
+            rows="2" 
+            placeholder="Short highlight for modal preview..."
+            class="w-full p-2.5 rounded-xl border border-stone-300 focus:border-stone-900 outline-none text-xs"
+          ></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-stone-200 flex justify-end gap-2">
+          <button type="button" id="cancelProductEditorBtn" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand hover:bg-brandDark text-white font-bold shadow-sm transition">
+            Save Product
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
+  <!-- 10. TOAST NOTIFICATION -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 bg-stone-900 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-xl transform translate-y-16 opacity-0 transition-all duration-300 flex items-center gap-2 border border-stone-700">
+    <i id="toastIcon" class="ph-bold ph-check text-amber-400 text-sm"></i>
+    <span id="toastMsg">Action completed successfully</span>
+  </div>
+
+  <!-- 11. APPLICATION SCRIPTS -->
   <script>
-    // -------------------------------------------------------------
-    // DEFAULT PRODUCTS (Edit these anytime or add via Admin)
-    // -------------------------------------------------------------
-    const INITIAL_PRODUCTS = [
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Default seed products for auxilick
+    const DEFAULT_PRODUCTS = [
       {
-        id: "1",
-        title: "Sunset Projection Lamp with 16 RGB Mood Colors",
-        category: "Aesthetic Room",
+        id: 101,
+        title: "Solid Walnut Dual Monitor Desk Riser Shelf",
+        category: "Desk Setup",
+        price: "$89.99",
+        badge: "Viral Pin",
+        description: "Handcrafted natural wood monitor stand with built-in aluminum legs and ergonomic eye-level lift.",
+        img: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=700&q=80",
+        affiliateUrl: "https://www.amazon.com/dp/B08R97Y2Q8?tag=auxilick-20",
+        clicks: 142
+      },
+      {
+        id: 102,
+        title: "Sunset Projection Atmospheric Ambient Lamp",
+        category: "Home & Kitchen",
         price: "$19.99",
-        badge: "TikTok Viral",
-        image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=600&auto=format&fit=crop&q=80",
-        amazonUrl: "https://amazon.com"
-      },
-      {
-        id: "2",
-        title: "Minimalist Floating Wooden Bedside Shelf with Wireless Charging",
-        category: "Desk Setup",
-        price: "$34.50",
-        badge: "Trending",
-        image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop&q=80",
-        amazonUrl: "https://amazon.com"
-      },
-      {
-        id: "3",
-        title: "Glass Ultrasonic Flame Essential Oil Aroma Diffuser",
-        category: "Aesthetic Room",
-        price: "$28.00",
-        badge: "Best Seller",
-        image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&auto=format&fit=crop&q=80",
-        amazonUrl: "https://amazon.com"
-      },
-      {
-        id: "4",
-        title: "Vintage Electric Gooseneck Matte Black Pour-Over Kettle",
-        category: "Kitchen & Home",
-        price: "$49.99",
-        badge: "Staff Pick",
-        image: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=600&auto=format&fit=crop&q=80",
-        amazonUrl: "https://amazon.com"
-      },
-      {
-        id: "5",
-        title: "Wireless Mechanical RGB Hot-Swappable 75% Keyboard",
-        category: "Desk Setup",
-        price: "$79.99",
-        badge: "Viral Pick",
-        image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
-        amazonUrl: "https://amazon.com"
-      },
-      {
-        id: "6",
-        title: "Touch-Controlled Cordless Crystal Ambient Bedside Lamp",
-        category: "Smart Gadgets",
-        price: "$22.90",
         badge: "Must Have",
-        image: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?w=600&auto=format&fit=crop&q=80",
-        amazonUrl: "https://amazon.com"
+        description: "360-degree rotating golden hour halo projector for cozy bedroom vibes and aesthetic photography.",
+        img: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=700&q=80",
+        affiliateUrl: "https://www.amazon.com/dp/B08R97Y2Q8?tag=auxilick-20",
+        clicks: 98
+      },
+      {
+        id: 103,
+        title: "Origami Ribbed Fluted Glassware Set with Straws",
+        category: "Home & Kitchen",
+        price: "$23.50",
+        badge: "Pinterest Favorite",
+        description: "Vintage European fluted glasses designed for iced matcha lattes, cold brew, and cocktail parties.",
+        img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80",
+        affiliateUrl: "https://www.amazon.com/dp/B09V7N86G9?tag=auxilick-20",
+        clicks: 185
+      },
+      {
+        id: 104,
+        title: "Foldable 3-in-1 Magnetic MagSafe Wireless Station",
+        category: "Tech & Gadgets",
+        price: "$34.99",
+        badge: "Amazon Choice",
+        description: "Space-saving fast wireless travel charger for iPhone, Apple Watch, and wireless earbuds.",
+        img: "https://images.unsplash.com/photo-1586816879360-004f5b0c51e3?auto=format&fit=crop&w=700&q=80",
+        affiliateUrl: "https://www.amazon.com/dp/B09X9Q12RT?tag=auxilick-20",
+        clicks: 114
+      },
+      {
+        id: 105,
+        title: "Ceramic Matte Ultrasonic Aromatherapy Diffuser",
+        category: "Beauty & Care",
+        price: "$38.00",
+        badge: "Quiet Mist",
+        description: "Handcrafted stone ceramic body with gentle warm ambient glow and auto-shutoff timer safety.",
+        img: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=700&q=80",
+        affiliateUrl: "https://www.amazon.com/dp/B07Z8L34N1?tag=auxilick-20",
+        clicks: 76
+      },
+      {
+        id: 106,
+        title: "Chunky Knit Chenille Blanket for Living Room",
+        category: "Home & Kitchen",
+        price: "$49.99",
+        badge: "Cozy Aesthetic",
+        description: "Ultra-soft heavyweight chenille knit throw that stays lint-free and feels luxurious on the couch.",
+        img: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=700&q=80",
+        affiliateUrl: "https://www.amazon.com/dp/B07P8M5TXX?tag=auxilick-20",
+        clicks: 63
+      },
+      {
+        id: 107,
+        title: "Oversized Pure Linen Casual Button-Down Shirt",
+        category: "Fashion & Style",
+        price: "$32.00",
+        badge: "Top Rated",
+        description: "Airy relaxed-fit organic linen staple for layering over summer outfits or minimal clean aesthetics.",
+        img: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=700&q=80",
+        affiliateUrl: "https://www.amazon.com/dp/B094R8HZZY?tag=auxilick-20",
+        clicks: 52
+      },
+      {
+        id: 108,
+        title: "Precision Matte Black Gooseneck Pour-Over Kettle",
+        category: "Home & Kitchen",
+        price: "$54.95",
+        badge: "Coffee Bar Staple",
+        description: "Quick-boil electric stainless steel kettle with digital degree-by-degree temperature regulation.",
+        img: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80",
+        affiliateUrl: "https://www.amazon.com/dp/B0892BQQ55?tag=auxilick-20",
+        clicks: 89
       }
     ];
 
-    // LocalStorage State Initialization
-    let products = JSON.parse(localStorage.getItem('auxilick_products')) || INITIAL_PRODUCTS;
-    let pageViews = parseInt(localStorage.getItem('auxilick_views') || '142') + 1;
-    let amazonClicks = parseInt(localStorage.getItem('auxilick_clicks') || '38');
+    // Local Storage Keys
+    const STORAGE_KEY_PRODUCTS = "auxilick_products_db_v1";
+    const STORAGE_KEY_VISITS = "auxilick_visits_db_v1";
+    const MASTER_ADMIN_PIN = "auxilick2026";
 
-    localStorage.setItem('auxilick_views', pageViews);
+    // State Variables
+    let products = [];
+    let siteVisits = 0;
+    let selectedCategory = 'all';
+    let searchQuery = '';
+    let isAdminUnlocked = false;
+    let currentModalProduct = null;
 
-    // Render Pin Cards
-    const masonryFeed = document.getElementById('masonryFeed');
-    function renderFeed(items) {
-      masonryFeed.innerHTML = items.map(product => `
-        <div class="pin-card" onclick="openProductModal('${product.id}')">
-          <div class="pin-img-wrap">
-            <img src="${product.image}" alt="${product.title}" loading="lazy">
-            ${product.badge ? `<span class="badge">${product.badge}</span>` : ''}
+    // ---------- PER-PRODUCT LINKS ----------
+    // Every product gets a "slug" (short name used in its link), e.g. ?p=linen-button-down-shirt
+    function slugify(s) {
+      return (s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'product';
+    }
+    function ensureSlugs() {
+      const used = new Set();
+      products.forEach(p => {
+        const base = p.slug || slugify(p.title);
+        let s = base, n = 2;
+        while (used.has(s)) { s = base + '-' + n++; }
+        p.slug = s;
+        used.add(s);
+      });
+    }
+    function baseUrl() { return window.location.href.split('#')[0].split('?')[0]; }
+    function productUrl(item) { return baseUrl() + '?p=' + encodeURIComponent(item.slug); }
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function copyText(text, okMsg) {
+      const fallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); showToast(okMsg); } catch (e) { window.prompt('Copy this:', text); }
+        ta.remove();
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast(okMsg), fallback);
+      } else { fallback(); }
+    }
+
+    // Toast Utility
+    function showToast(message, icon = "ph-check") {
+      const toast = document.getElementById('toastNotification');
+      const msg = document.getElementById('toastMsg');
+      const ico = document.getElementById('toastIcon');
+
+      msg.textContent = message;
+      ico.className = `ph-bold ${icon} text-amber-400 text-sm`;
+      toast.classList.remove('translate-y-16', 'opacity-0');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-16', 'opacity-0');
+      }, 2800);
+    }
+
+    // 1. DATA INITIALIZATION
+    function initData() {
+      // Products
+      const savedProds = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+      if (savedProds) {
+        try {
+          products = JSON.parse(savedProds);
+        } catch (e) {
+          products = DEFAULT_PRODUCTS;
+        }
+      } else {
+        products = DEFAULT_PRODUCTS;
+        persistProducts();
+      }
+
+      // Traffic Visits
+      const savedVisits = localStorage.getItem(STORAGE_KEY_VISITS);
+      siteVisits = savedVisits ? parseInt(savedVisits, 10) : 180;
+      siteVisits += 1; // Count this session visit
+      localStorage.setItem(STORAGE_KEY_VISITS, siteVisits.toString());
+
+      ensureSlugs();
+      persistProducts();
+    }
+
+    function persistProducts() {
+      localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
+    }
+
+    // Outbound link tracker
+    function triggerAmazonOutbound(productId, targetUrl) {
+      const item = products.find(p => p.id === productId);
+      if (item) {
+        item.clicks = (item.clicks || 0) + 1;
+        persistProducts();
+        if (isAdminUnlocked) {
+          updateAdminDashboardStats();
+          renderAdminTable();
+        }
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    }
+
+    // 2. CATEGORIES RENDER
+    function renderCategories() {
+      const container = document.getElementById('categoryContainer');
+      const categories = ['all', 'Home & Kitchen', 'Desk Setup', 'Tech & Gadgets', 'Fashion & Style', 'Beauty & Care'];
+      
+      // Ensure all custom categories present in products are included
+      products.forEach(p => {
+        if (p.category && !categories.includes(p.category)) {
+          categories.push(p.category);
+        }
+      });
+
+      container.innerHTML = categories.map(cat => {
+        const isActive = selectedCategory === cat;
+        const label = cat === 'all' ? 'All Curated Pins' : cat;
+        return `
+          <button 
+            class="cat-chip px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition flex-shrink-0 ${
+              isActive 
+                ? 'bg-stone-900 text-white shadow-sm' 
+                : 'bg-white text-stone-600 border border-stone-200/80 hover:bg-stone-100'
+            }" 
+            data-cat="${cat}"
+          >
+            ${label}
+          </button>
+        `;
+      }).join('');
+    }
+
+    // 3. PUBLIC MASONRY PINS RENDER
+    function renderPinsGrid() {
+      const grid = document.getElementById('pinsGrid');
+      const pinCount = document.getElementById('pinCount');
+      const emptyState = document.getElementById('noPinsFound');
+
+      const query = searchQuery.toLowerCase().trim();
+      const filtered = products.filter(p => {
+        const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
+        const matchesQuery = !query || 
+          p.title.toLowerCase().includes(query) || 
+          (p.description && p.description.toLowerCase().includes(query)) ||
+          p.category.toLowerCase().includes(query);
+        return matchesCategory && matchesQuery;
+      });
+
+      pinCount.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = filtered.map(item => `
+        <div class="pin-card bg-white rounded-3xl overflow-hidden border border-stone-200/90 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
+          <!-- Card Image Container -->
+          <div class="relative overflow-hidden cursor-pointer preview-trigger bg-stone-100" data-id="${item.id}">
+            <img 
+              src="${item.img}" 
+              alt="${item.title}" 
+              loading="lazy" 
+              class="w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+              onerror="this.src='https://placehold.co/600x800/f5f5f4/a8a29e?text=auxilick+Pin';"
+            />
+            
+            ${item.badge ? `
+              <div class="absolute top-2.5 left-2.5">
+                <span class="bg-white/95 backdrop-blur font-bold text-[10px] text-stone-900 px-2.5 py-1 rounded-lg shadow-sm">${item.badge}</span>
+              </div>
+            ` : ''}
+
+            <!-- Price Tag -->
+            <div class="absolute bottom-2.5 right-2.5 bg-stone-900/90 text-white font-extrabold text-xs px-2.5 py-1 rounded-full shadow backdrop-blur-xs">
+              ${item.price}
+            </div>
+
+            <!-- Quick View Hover Button -->
+            <div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+              <span class="bg-white text-stone-900 px-4 py-2 rounded-full font-bold text-xs shadow-lg flex items-center gap-1.5 transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                <i class="ph-bold ph-eye"></i> View Product
+              </span>
+            </div>
           </div>
-          <div class="pin-info">
-            <h3 class="pin-title">${product.title}</h3>
-            <div class="pin-meta">
-              <span class="pin-price">${product.price}</span>
-              <a href="${product.amazonUrl}" target="_blank" rel="noopener noreferrer nofollow" 
-                 class="btn-amazon-quick" onclick="handleAmazonClick(event, '${product.amazonUrl}')">
-                View <i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i>
-              </a>
+
+          <!-- Card Content -->
+          <div class="p-3.5 flex flex-col flex-1 justify-between gap-3">
+            <div>
+              <div class="flex items-center justify-between text-[11px] font-semibold text-brand mb-1">
+                <span>${item.category}</span>
+                <span class="text-stone-400 font-normal">Amazon Prime</span>
+              </div>
+              <h3 class="font-bold text-stone-900 text-sm leading-snug line-clamp-2 hover:text-brand transition cursor-pointer preview-trigger" data-id="${item.id}">
+                ${item.title}
+              </h3>
+              <p class="text-stone-500 text-xs mt-1 line-clamp-2 leading-relaxed">
+                ${item.description || ''}
+              </p>
+            </div>
+
+            <!-- Outbound Amazon CTA -->
+            <div class="flex items-center gap-2 pt-1">
+              <button 
+                class="btn-cta-amazon flex-1 py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition active:scale-95"
+                data-id="${item.id}" 
+                data-url="${item.affiliateUrl}"
+              >
+                <span>Get on Amazon</span>
+                <i class="ph-bold ph-arrow-up-right text-sm"></i>
+              </button>
             </div>
           </div>
         </div>
       `).join('');
-      lucide.createIcons();
-    }
 
-    // Modal & Deep Linking Functionality
-    const productModal = document.getElementById('productModal');
-    const modalImg = document.getElementById('modalImg');
-    const modalCat = document.getElementById('modalCat');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalPrice = document.getElementById('modalPrice');
-    const modalAmazonBtn = document.getElementById('modalAmazonBtn');
-
-    function openProductModal(productId) {
-      const product = products.find(p => String(p.id) === String(productId));
-      if (!product) return;
-
-      modalImg.src = product.image;
-      modalCat.textContent = product.category;
-      modalTitle.textContent = product.title;
-      modalPrice.textContent = product.price;
-      
-      modalAmazonBtn.href = product.amazonUrl;
-      modalAmazonBtn.onclick = (e) => handleAmazonClick(e, product.amazonUrl);
-
-      productModal.classList.add('active');
-    }
-
-    document.getElementById('modalClose').addEventListener('click', () => {
-      productModal.classList.remove('active');
-    });
-    productModal.addEventListener('click', (e) => {
-      if (e.target === productModal) productModal.classList.remove('active');
-    });
-
-    // Outbound Click Tracker
-    function handleAmazonClick(e, url) {
-      e.stopPropagation();
-      amazonClicks++;
-      localStorage.setItem('auxilick_clicks', amazonClicks);
-      updateAdminStats();
-    }
-
-    // Automatic Pinterest Deep Link Checker
-    function checkDeepLink() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const deepId = urlParams.get('p');
-      if (deepId) {
-        openProductModal(deepId);
-      }
-    }
-
-    // Filter by Category
-    const categoryButtons = document.querySelectorAll('.cat-pill');
-    categoryButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        categoryButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const cat = btn.dataset.category;
-        if (cat === 'all') {
-          renderFeed(products);
-        } else {
-          renderFeed(products.filter(p => p.category === cat));
-        }
+      // Preview triggers
+      grid.querySelectorAll('.preview-trigger').forEach(el => {
+        el.addEventListener('click', () => {
+          const id = parseInt(el.getAttribute('data-id'), 10);
+          const item = products.find(p => p.id === id);
+          if (item) window.location.href = productUrl(item);
+        });
       });
-    });
 
-    // Search Bar Live Filter
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', (e) => {
-      const val = e.target.value.toLowerCase();
-      const filtered = products.filter(p => 
-        p.title.toLowerCase().includes(val) || 
-        p.category.toLowerCase().includes(val)
-      );
-      renderFeed(filtered);
-    });
-
-    // Toast Alert
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMsg').textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
-    }
-
-    // Copy Deep Link Helper
-    function copyDeepLink(id) {
-      const baseUrl = window.location.origin + window.location.pathname;
-      const fullUrl = `${baseUrl}?p=${id}`;
-      navigator.clipboard.writeText(fullUrl).then(() => {
-        showToast(`Copied Pin link: ?p=${id}`);
+      // Outbound buttons
+      grid.querySelectorAll('.btn-cta-amazon').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = parseInt(btn.getAttribute('data-id'), 10);
+          const url = btn.getAttribute('data-url');
+          triggerAmazonOutbound(id, url);
+        });
       });
     }
 
-    // -------------------------------------------------------------
-    // SECRET ADMIN HUB LOGIC
-    // -------------------------------------------------------------
-    const adminModal = document.getElementById('adminModal');
-    let tapCount = 0;
-    let tapTimer = null;
+    // 4. QUICK-VIEW MODAL LOGIC
+    const quickViewModal = document.getElementById('quickViewModal');
+    function openQuickViewModal(item) {
+      currentModalProduct = item;
+      document.getElementById('modalImg').src = item.img;
+      document.getElementById('modalBadge').textContent = item.badge || 'auxilick Pick';
+      document.getElementById('modalCategory').textContent = item.category;
+      document.getElementById('modalPrice').textContent = item.price;
+      document.getElementById('modalTitle').textContent = item.title;
+      document.getElementById('modalDesc').textContent = item.description || 'Verified product listing with live customer reviews and Prime shipping eligibility on Amazon.';
 
-    function promptAdminAccess() {
-      const pin = prompt("Enter auxilick Admin Passcode:");
-      if (pin === "auxilick2026") {
-        updateAdminStats();
-        renderAdminTable();
-        adminModal.classList.add('open');
-      } else if (pin !== null) {
-        alert("Incorrect PIN.");
-      }
+      quickViewModal.classList.remove('hidden');
+      quickViewModal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
     }
 
-    // Secret Trigger 1: Shortcut (Ctrl + Shift + A)
-    window.addEventListener('keydown', (e) => {
+    function closeQuickViewModal() {
+      quickViewModal.classList.add('hidden');
+      quickViewModal.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+      currentModalProduct = null;
+    }
+
+    document.getElementById('closeQuickViewBtn').addEventListener('click', closeQuickViewModal);
+    quickViewModal.addEventListener('click', (e) => {
+      if (e.target === quickViewModal) closeQuickViewModal();
+    });
+
+    document.getElementById('modalAffiliateCTA').addEventListener('click', () => {
+      if (currentModalProduct) {
+        triggerAmazonOutbound(currentModalProduct.id, currentModalProduct.affiliateUrl);
+      }
+    });
+
+    // 5. COMPLETELY HIDDEN ADMIN ACCESS CONTROLLERS
+    const secretAuthModal = document.getElementById('secretAuthModal');
+    const secretPinInput = document.getElementById('secretPinInput');
+    const authErrorMsg = document.getElementById('authErrorMsg');
+    const secretAdminDashboard = document.getElementById('secretAdminDashboard');
+
+    function promptSecretAuth() {
+      if (isAdminUnlocked) {
+        openAdminDashboard();
+        return;
+      }
+      secretAuthModal.classList.remove('hidden');
+      secretAuthModal.classList.add('flex');
+      secretPinInput.value = '';
+      authErrorMsg.classList.add('hidden');
+      secretPinInput.focus();
+    }
+
+    function closeSecretAuth() {
+      secretAuthModal.classList.add('hidden');
+      secretAuthModal.classList.remove('flex');
+    }
+
+    document.getElementById('cancelAuthBtn').addEventListener('click', closeSecretAuth);
+
+    // Form unlock
+    document.getElementById('secretAuthForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (secretPinInput.value.trim() === MASTER_ADMIN_PIN) {
+        isAdminUnlocked = true;
+        closeSecretAuth();
+        openAdminDashboard();
+        showToast("auxilick Admin Console unlocked");
+      } else {
+        authErrorMsg.classList.remove('hidden');
+      }
+    });
+
+    function openAdminDashboard() {
+      secretAdminDashboard.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      updateAdminDashboardStats();
+      renderAdminTable();
+    }
+
+    function exitAdminDashboard() {
+      secretAdminDashboard.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      renderPinsGrid();
+    }
+
+    document.getElementById('btnExitAdmin').addEventListener('click', exitAdminDashboard);
+
+    // SECRET TRIGGER A: Shortcut (Ctrl + Shift + A or Cmd + Shift + A)
+    document.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
         e.preventDefault();
-        promptAdminAccess();
+        promptSecretAuth();
+      }
+      // Escape closes open modals
+      if (e.key === 'Escape') {
+        closeQuickViewModal();
+        closeSecretAuth();
+        closeProductEditor();
       }
     });
 
-    // Secret Trigger 2: Tap Logo 5 Times
-    document.getElementById('brandLogo').addEventListener('click', () => {
-      tapCount++;
-      clearTimeout(tapTimer);
-      tapTimer = setTimeout(() => { tapCount = 0; }, 1200);
-      if (tapCount >= 5) {
-        tapCount = 0;
-        promptAdminAccess();
+    // SECRET TRIGGER B: 5 Rapid Clicks on 'auxilick' brand logo
+    let logoClickCount = 0;
+    let logoClickTimer = null;
+    document.getElementById('brandLogoTrigger').addEventListener('click', () => {
+      logoClickCount++;
+      clearTimeout(logoClickTimer);
+      logoClickTimer = setTimeout(() => {
+        logoClickCount = 0;
+      }, 1500);
+
+      if (logoClickCount >= 5) {
+        logoClickCount = 0;
+        promptSecretAuth();
       }
     });
 
-    // Secret Trigger 3: URL hash (#admin)
-    if (window.location.hash === '#admin') {
-      promptAdminAccess();
+    // SECRET TRIGGER C: Check URL parameter or hash (#admin or ?admin=true)
+    function checkUrlForAdminTrigger() {
+      const hash = window.location.hash.toLowerCase();
+      const params = new URLSearchParams(window.location.search);
+      if (hash === '#admin' || params.get('admin') === 'true') {
+        promptSecretAuth();
+      }
     }
 
-    document.getElementById('adminClose').addEventListener('click', () => {
-      adminModal.classList.remove('open');
-    });
+    // 6. ADMIN DASHBOARD METRICS & TABLE
+    function updateAdminDashboardStats() {
+      const totalClicks = products.reduce((acc, curr) => acc + (curr.clicks || 0), 0);
+      const ctr = siteVisits > 0 ? ((totalClicks / siteVisits) * 100).toFixed(1) : '0.0';
 
-    function updateAdminStats() {
-      document.getElementById('statViews').textContent = pageViews;
-      document.getElementById('statClicks').textContent = amazonClicks;
-      const ctr = pageViews > 0 ? ((amazonClicks / pageViews) * 100).toFixed(1) : 0;
+      document.getElementById('statVisits').textContent = siteVisits.toLocaleString();
+      document.getElementById('statClicks').textContent = totalClicks.toLocaleString();
       document.getElementById('statCTR').textContent = `${ctr}%`;
+      document.getElementById('statProductCount').textContent = products.length;
+
+      // Top 3 Products
+      const sorted = [...products].sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 3);
+      const topContainer = document.getElementById('topPinsContainer');
+      topContainer.innerHTML = sorted.map((p, i) => `
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-stone-50 border border-stone-100">
+          <div class="flex items-center gap-2.5 overflow-hidden">
+            <span class="w-5 h-5 rounded-full ${i === 0 ? 'bg-amber-400 text-stone-900' : 'bg-stone-200 text-stone-600'} font-black text-[10px] flex items-center justify-center flex-shrink-0">
+              ${i + 1}
+            </span>
+            <img src="${p.img}" class="w-8 h-8 rounded-lg object-cover flex-shrink-0" onerror="this.src='https://placehold.co/80x80?text=Pin';" />
+            <span class="font-bold text-xs truncate max-w-[140px] text-stone-800">${p.title}</span>
+          </div>
+          <span class="text-xs font-black text-amber-600 ml-2 flex-shrink-0">
+            ${p.clicks || 0} clicks
+          </span>
+        </div>
+      `).join('');
     }
 
+    let adminSearchQuery = '';
     function renderAdminTable() {
-      const tbody = document.getElementById('adminProductTable');
-      tbody.innerHTML = products.map(p => `
-        <tr>
-          <td style="font-weight:600; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.title}</td>
-          <td>${p.category}</td>
-          <td style="color:#22c55e; font-weight:700;">${p.price}</td>
-          <td>
-            <button class="btn-copy-pin" onclick="copyDeepLink('${p.id}')">
-              <i data-lucide="link" style="width:12px;height:12px;"></i> Copy Pin Link
-            </button>
+      const tbody = document.getElementById('adminTableBody');
+      const q = adminSearchQuery.toLowerCase().trim();
+
+      const filtered = products.filter(p => !q || p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-stone-400 text-xs">No products match query.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(item => `
+        <tr class="hover:bg-stone-50 transition">
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-3">
+              <img src="${item.img}" class="w-10 h-10 rounded-xl object-cover flex-shrink-0 border border-stone-200" onerror="this.src='https://placehold.co/80x80?text=Pin';" />
+              <div>
+                <a href="${item.affiliateUrl}" target="_blank" class="font-bold text-stone-900 hover:text-brand transition flex items-center gap-1 line-clamp-1">
+                  ${item.title} <i class="ph-bold ph-arrow-up-right text-[10px] text-stone-400"></i>
+                </a>
+                <span class="text-[10px] text-amber-700 block truncate max-w-[220px]">Pin link: ?p=${item.slug}</span>
+              </div>
+            </div>
           </td>
-          <td>
-            <button class="btn-del" onclick="deleteProduct('${p.id}')">Delete</button>
+          <td class="px-4 py-3 font-semibold text-stone-700">${item.category}</td>
+          <td class="px-4 py-3 font-bold text-stone-900">${item.price}</td>
+          <td class="px-4 py-3">
+            ${item.badge ? `<span class="bg-rose-50 text-brand font-semibold px-2 py-0.5 rounded-md text-[10px]">${item.badge}</span>` : '<span class="text-stone-300">-</span>'}
+          </td>
+          <td class="px-4 py-3 text-center">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-black bg-amber-50 text-amber-700 border border-amber-200">
+              ${item.clicks || 0}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-right">
+            <div class="flex items-center justify-end gap-1.5">
+              <button class="btn-copy-link px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold flex items-center gap-1" data-id="${item.id}" title="Copy this product's own link for your Pin">
+                <i class="ph-bold ph-link text-sm"></i> Pin link
+              </button>
+              <button class="btn-edit-item p-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700" data-id="${item.id}" title="Edit Product">
+                <i class="ph-bold ph-pencil-simple text-sm"></i>
+              </button>
+              <button class="btn-delete-item p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-brand" data-id="${item.id}" title="Delete Product">
+                <i class="ph-bold ph-trash text-sm"></i>
+              </button>
+            </div>
           </td>
         </tr>
       `).join('');
-      lucide.createIcons();
+
+      tbody.querySelectorAll('.btn-copy-link').forEach(b => {
+        b.addEventListener('click', () => {
+          const item = products.find(p => p.id === parseInt(b.getAttribute('data-id'), 10));
+          if (item) copyText(productUrl(item), 'Pin link copied');
+        });
+      });
+
+      tbody.querySelectorAll('.btn-edit-item').forEach(b => {
+        b.addEventListener('click', () => openProductEditor(parseInt(b.getAttribute('data-id'), 10)));
+      });
+
+      tbody.querySelectorAll('.btn-delete-item').forEach(b => {
+        b.addEventListener('click', () => deleteProduct(parseInt(b.getAttribute('data-id'), 10)));
+      });
     }
 
-    // Add Product Form Handler
-    document.getElementById('addProductForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const newProduct = {
-        id: Date.now().toString(),
-        title: document.getElementById('newTitle').value,
-        category: document.getElementById('newCategory').value,
-        price: document.getElementById('newPrice').value,
-        badge: document.getElementById('newBadge').value || "Curated",
-        image: document.getElementById('newImage').value,
-        amazonUrl: document.getElementById('newAmazonLink').value
-      };
-
-      products.unshift(newProduct);
-      localStorage.setItem('auxilick_products', JSON.stringify(products));
-      renderFeed(products);
+    document.getElementById('adminSearchInput').addEventListener('input', (e) => {
+      adminSearchQuery = e.target.value;
       renderAdminTable();
-      e.target.reset();
-      showToast("Product added successfully!");
+    });
+
+    // 7. PRODUCT ADD / EDIT MODAL
+    const productEditorModal = document.getElementById('productEditorModal');
+    const productEditorForm = document.getElementById('productEditorForm');
+
+    function openProductEditor(editId = null) {
+      productEditorForm.reset();
+      if (editId) {
+        const item = products.find(p => p.id === editId);
+        if (!item) return;
+        document.getElementById('productEditorTitle').textContent = "Edit Pin Product";
+        document.getElementById('editProductId').value = item.id;
+        document.getElementById('fieldTitle').value = item.title;
+        document.getElementById('fieldCategory').value = item.category;
+        document.getElementById('fieldPrice').value = item.price;
+        document.getElementById('fieldBadge').value = item.badge || '';
+        document.getElementById('fieldClicks').value = item.clicks || 0;
+        document.getElementById('fieldImage').value = item.img;
+        document.getElementById('fieldAffiliateUrl').value = item.affiliateUrl;
+        document.getElementById('fieldDesc').value = item.description || '';
+      } else {
+        document.getElementById('productEditorTitle').textContent = "Add New Pin Product";
+        document.getElementById('editProductId').value = '';
+        document.getElementById('fieldClicks').value = 0;
+      }
+
+      productEditorModal.classList.remove('hidden');
+      productEditorModal.classList.add('flex');
+    }
+
+    function closeProductEditor() {
+      productEditorModal.classList.add('hidden');
+      productEditorModal.classList.remove('flex');
+    }
+
+    document.getElementById('btnOpenNewProductModal').addEventListener('click', () => openProductEditor(null));
+    document.getElementById('closeProductEditorBtn').addEventListener('click', closeProductEditor);
+    document.getElementById('cancelProductEditorBtn').addEventListener('click', closeProductEditor);
+
+    productEditorForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const idVal = document.getElementById('editProductId').value;
+      const title = document.getElementById('fieldTitle').value.trim();
+      const category = document.getElementById('fieldCategory').value.trim();
+      const price = document.getElementById('fieldPrice').value.trim();
+      const badge = document.getElementById('fieldBadge').value.trim();
+      const clicks = parseInt(document.getElementById('fieldClicks').value, 10) || 0;
+      const img = document.getElementById('fieldImage').value.trim();
+      const affiliateUrl = document.getElementById('fieldAffiliateUrl').value.trim();
+      const desc = document.getElementById('fieldDesc').value.trim();
+
+      if (idVal) {
+        const id = parseInt(idVal, 10);
+        const index = products.findIndex(p => p.id === id);
+        if (index !== -1) {
+          products[index] = { ...products[index], title, category, price, badge, clicks, img, affiliateUrl, description: desc };
+          showToast("Product updated successfully");
+        }
+      } else {
+        const newItem = {
+          id: Date.now(),
+          title,
+          category,
+          price,
+          badge,
+          clicks,
+          img,
+          affiliateUrl,
+          description: desc
+        };
+        products.unshift(newItem);
+        ensureSlugs();
+        showToast("New product added to auxilick feed");
+      }
+
+      persistProducts();
+      closeProductEditor();
+      updateAdminDashboardStats();
+      renderAdminTable();
+      renderCategories();
+      renderPinsGrid();
     });
 
     function deleteProduct(id) {
-      if (confirm("Are you sure you want to delete this product?")) {
-        products = products.filter(p => String(p.id) !== String(id));
-        localStorage.setItem('auxilick_products', JSON.stringify(products));
-        renderFeed(products);
+      if (confirm("Delete this product from your storefront catalog?")) {
+        products = products.filter(p => p.id !== id);
+        persistProducts();
+        updateAdminDashboardStats();
         renderAdminTable();
+        renderCategories();
+        renderPinsGrid();
+        showToast("Product deleted");
       }
     }
 
-    // Initial Execution
-    renderFeed(products);
-    checkDeepLink();
+    // Reset analytics
+    document.getElementById('btnResetAnalytics').addEventListener('click', () => {
+      if (confirm("Reset total visits and outbound Amazon click counts?")) {
+        siteVisits = 1;
+        localStorage.setItem(STORAGE_KEY_VISITS, '1');
+        products.forEach(p => p.clicks = 0);
+        persistProducts();
+        updateAdminDashboardStats();
+        renderAdminTable();
+        showToast("Analytics counters reset");
+      }
+    });
+
+    // Export Catalog JSON
+    document.getElementById('btnExportJSON').addEventListener('click', () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products, null, 2));
+      const dl = document.createElement('a');
+      dl.setAttribute("href", dataStr);
+      dl.setAttribute("download", `auxilick_catalog_backup.json`);
+      document.body.appendChild(dl);
+      dl.click();
+      dl.remove();
+      showToast("Catalog backup downloaded");
+    });
+
+    // 8. FRONT SEARCH & CATEGORY FILTER LISTENERS
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      if (searchQuery.trim().length > 0) {
+        clearSearchBtn.classList.remove('hidden');
+      } else {
+        clearSearchBtn.classList.add('hidden');
+      }
+      renderPinsGrid();
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      searchQuery = '';
+      clearSearchBtn.classList.add('hidden');
+      renderPinsGrid();
+      searchInput.focus();
+    });
+
+    document.getElementById('categoryContainer').addEventListener('click', (e) => {
+      const chip = e.target.closest('.cat-chip');
+      if (!chip) return;
+      selectedCategory = chip.getAttribute('data-cat');
+      renderCategories();
+      renderPinsGrid();
+    });
+
+    resetFiltersBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      searchQuery = '';
+      clearSearchBtn.classList.add('hidden');
+      selectedCategory = 'all';
+      renderCategories();
+      renderPinsGrid();
+    });
+
+    // Copy the whole catalog as code, to paste over DEFAULT_PRODUCTS in this file before you upload it
+    document.getElementById('btnCopyCode').addEventListener('click', () => {
+      const clean = products.map(p => ({ ...p, clicks: 0 }));
+      copyText('const DEFAULT_PRODUCTS = ' + JSON.stringify(clean, null, 2) + ';', 'Publish code copied');
+    });
+
+    // 9. SINGLE PRODUCT PAGE
+    function renderProductPage(slug) {
+      const page = document.getElementById('productPage');
+      ['heroSection', 'feedMain', 'categoryContainer', 'searchWrap'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      page.classList.remove('hidden');
+
+      const item = products.find(p => p.slug === slug || String(p.id) === slug);
+      const back = `<a href="${baseUrl()}" class="inline-flex items-center gap-1.5 text-xs font-bold text-stone-600 hover:text-brand mb-4"><i class="ph-bold ph-arrow-left"></i> All auxilick finds</a>`;
+
+      if (!item) {
+        page.innerHTML = back + `<div class="text-center py-16"><h2 class="text-lg font-bold text-stone-800">This product link isn't available</h2><p class="text-xs text-stone-500 mt-1">It may have been removed or the link is incomplete.</p></div>`;
+        return;
+      }
+
+      document.title = item.title + ' | auxilick';
+      const related = [...products.filter(p => p !== item && p.category === item.category), ...products.filter(p => p !== item && p.category !== item.category)].slice(0, 4);
+
+      page.innerHTML = back + `
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden grid md:grid-cols-2">
+          <div class="relative bg-stone-100">
+            <img src="${esc(item.img)}" alt="${esc(item.title)}" class="w-full h-full object-cover max-h-[560px]"
+                 onerror="this.src='https://placehold.co/600x800/f5f5f4/a8a29e?text=auxilick+Pin';" />
+            ${item.badge ? `<span class="absolute top-3 left-3 bg-white/95 font-bold text-[10px] text-stone-900 px-2.5 py-1 rounded-lg shadow-sm">${esc(item.badge)}</span>` : ''}
+          </div>
+          <div class="p-6 sm:p-8 flex flex-col">
+            <span class="text-xs font-bold text-brand">${esc(item.category)}</span>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-stone-900 leading-snug mt-1">${esc(item.title)}</h1>
+            <div class="text-2xl font-black text-stone-900 mt-3">${esc(item.price)}</div>
+            <p class="text-sm text-stone-600 leading-relaxed mt-3">${esc(item.description || '')}</p>
+            <a id="ppCta" href="${esc(item.affiliateUrl)}" target="_blank" rel="sponsored nofollow noopener"
+               class="mt-6 w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-bold text-sm text-center flex items-center justify-center gap-2 shadow-md shadow-amber-200/60 transition active:scale-95">
+              <span>Get on Amazon</span><i class="ph-bold ph-arrow-up-right text-base"></i>
+            </a>
+            <p class="text-[11px] text-stone-400 mt-2.5">Opens Amazon in a new tab. Price and availability may change. As an Amazon Associate, auxilick earns from qualifying purchases.</p>
+          </div>
+        </div>
+        ${related.length ? `
+        <h2 class="text-sm font-extrabold text-stone-900 mt-8 mb-3">More auxilick finds</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          ${related.map(r => `
+            <a href="${productUrl(r)}" class="block bg-white rounded-2xl border border-stone-200 overflow-hidden hover:shadow-md transition">
+              <img src="${esc(r.img)}" alt="${esc(r.title)}" loading="lazy" class="w-full h-40 object-cover" onerror="this.src='https://placehold.co/400x400/f5f5f4/a8a29e?text=auxilick';" />
+              <div class="p-2.5"><div class="text-xs font-bold text-stone-900 line-clamp-2">${esc(r.title)}</div><div class="text-xs text-stone-500 mt-0.5">${esc(r.price)}</div></div>
+            </a>`).join('')}
+        </div>` : ''}
+      `;
+
+      document.getElementById('ppCta').addEventListener('click', () => {
+        item.clicks = (item.clicks || 0) + 1;
+        persistProducts();
+      });
+      window.scrollTo(0, 0);
+    }
+
+    // BOOTSTRAP
+    initData();
+    const requestedProduct = new URLSearchParams(window.location.search).get('p');
+    if (requestedProduct) {
+      renderProductPage(requestedProduct);   // link like  yoursite.com/?p=product-name
+    } else {
+      renderCategories();
+      renderPinsGrid();
+    }
+    checkUrlForAdminTrigger();
   </script>
 </body>
 </html>
