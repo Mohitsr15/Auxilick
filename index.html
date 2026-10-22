@@ -6,6 +6,8 @@
   <title>auxilick — Aesthetic Pinterest Finds & Deals</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase client (database + login) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <!-- Inter Font -->
@@ -226,17 +228,14 @@
         <i class="ph-bold ph-key"></i>
       </div>
       <h3 class="font-extrabold text-stone-900 text-base">auxilick Console</h3>
-      <p class="text-xs text-stone-500 mt-1 mb-4">Enter secret master PIN to access analytics and products.</p>
+      <p class="text-xs text-stone-500 mt-1 mb-4">Sign in with your admin email and password.</p>
       
       <form id="secretAuthForm" class="space-y-3">
-        <input 
-          type="password" 
-          id="secretPinInput" 
-          placeholder="••••••••" 
-          class="w-full py-2.5 px-3 rounded-xl border border-stone-300 text-center tracking-widest text-base font-bold outline-none focus:border-stone-900 transition"
-          required
-        />
-        <div id="authErrorMsg" class="text-brand text-xs font-semibold hidden">Incorrect PIN. Try again.</div>
+        <input type="email" id="adminEmailInput" placeholder="Admin email" required
+          class="w-full py-2.5 px-3 rounded-xl border border-stone-300 text-center text-sm outline-none focus:border-stone-900 transition" />
+        <input type="password" id="secretPinInput" placeholder="Password" required
+          class="w-full py-2.5 px-3 rounded-xl border border-stone-300 text-center text-sm outline-none focus:border-stone-900 transition" />
+        <div id="authErrorMsg" class="text-brand text-xs font-semibold hidden">Sign-in failed. Check your email and password.</div>
         <div class="flex gap-2">
           <button type="button" id="cancelAuthBtn" class="w-1/2 py-2.5 rounded-xl bg-stone-100 text-stone-600 font-bold text-xs hover:bg-stone-200 transition">Cancel</button>
           <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-stone-900 text-white font-bold text-xs hover:bg-stone-800 transition">Unlock</button>
@@ -340,17 +339,14 @@
               <p>• <strong>Trigger 1 (Secret Shortcut):</strong> Press <kbd class="px-1.5 py-0.5 bg-white border rounded shadow-xs text-stone-800 font-mono">Ctrl + Shift + A</kbd> (or <kbd class="px-1.5 py-0.5 bg-white border rounded shadow-xs text-stone-800 font-mono">Cmd + Shift + A</kbd> on Mac) anywhere on the page.</p>
               <p>• <strong>Trigger 2 (Logo Tap):</strong> Rapidly click/tap the <strong>auxilick</strong> logo in the top-left <strong>5 times</strong> in a row.</p>
               <p>• <strong>Trigger 3 (URL Hash):</strong> Load the site with <code class="px-1 py-0.5 bg-white border rounded text-rose-700 font-mono">#admin</code> or <code class="px-1 py-0.5 bg-white border rounded text-rose-700 font-mono">?admin=true</code> in the address bar.</p>
-              <p>• <strong>Master PIN:</strong> <code class="font-bold text-stone-900 bg-amber-100 px-1.5 py-0.5 rounded">auxilick2026</code></p>
+              <p>• <strong>Login:</strong> the admin email and password you created in Supabase.</p>
             </div>
           </div>
 
           <div class="pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <span class="text-stone-400">All data automatically saves to your browser's persistent storage.</span>
+            <span class="text-stone-400">All data is stored in your Supabase database and shows on every device.</span>
             <div class="flex items-center gap-2">
-              <button id="btnCopyCode" class="px-3.5 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-stone-900 font-bold flex items-center gap-1.5 transition">
-                <i class="ph-bold ph-code"></i> Copy publish code
-              </button>
-              <button id="btnExportJSON" class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold flex items-center gap-1.5 transition">
+                            <button id="btnExportJSON" class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold flex items-center gap-1.5 transition">
                 <i class="ph-bold ph-download-simple"></i> Backup JSON
               </button>
               <button id="btnResetAnalytics" class="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-brand font-bold flex items-center gap-1.5 transition">
@@ -536,102 +532,16 @@
   <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-    // Default seed products for auxilick
-    const DEFAULT_PRODUCTS = [
-      {
-        id: 101,
-        title: "Solid Walnut Dual Monitor Desk Riser Shelf",
-        category: "Desk Setup",
-        price: "$89.99",
-        badge: "Viral Pin",
-        description: "Handcrafted natural wood monitor stand with built-in aluminum legs and ergonomic eye-level lift.",
-        img: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=700&q=80",
-        affiliateUrl: "https://www.amazon.com/dp/B08R97Y2Q8?tag=auxilick-20",
-        clicks: 142
-      },
-      {
-        id: 102,
-        title: "Sunset Projection Atmospheric Ambient Lamp",
-        category: "Home & Kitchen",
-        price: "$19.99",
-        badge: "Must Have",
-        description: "360-degree rotating golden hour halo projector for cozy bedroom vibes and aesthetic photography.",
-        img: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=700&q=80",
-        affiliateUrl: "https://www.amazon.com/dp/B08R97Y2Q8?tag=auxilick-20",
-        clicks: 98
-      },
-      {
-        id: 103,
-        title: "Origami Ribbed Fluted Glassware Set with Straws",
-        category: "Home & Kitchen",
-        price: "$23.50",
-        badge: "Pinterest Favorite",
-        description: "Vintage European fluted glasses designed for iced matcha lattes, cold brew, and cocktail parties.",
-        img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80",
-        affiliateUrl: "https://www.amazon.com/dp/B09V7N86G9?tag=auxilick-20",
-        clicks: 185
-      },
-      {
-        id: 104,
-        title: "Foldable 3-in-1 Magnetic MagSafe Wireless Station",
-        category: "Tech & Gadgets",
-        price: "$34.99",
-        badge: "Amazon Choice",
-        description: "Space-saving fast wireless travel charger for iPhone, Apple Watch, and wireless earbuds.",
-        img: "https://images.unsplash.com/photo-1586816879360-004f5b0c51e3?auto=format&fit=crop&w=700&q=80",
-        affiliateUrl: "https://www.amazon.com/dp/B09X9Q12RT?tag=auxilick-20",
-        clicks: 114
-      },
-      {
-        id: 105,
-        title: "Ceramic Matte Ultrasonic Aromatherapy Diffuser",
-        category: "Beauty & Care",
-        price: "$38.00",
-        badge: "Quiet Mist",
-        description: "Handcrafted stone ceramic body with gentle warm ambient glow and auto-shutoff timer safety.",
-        img: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=700&q=80",
-        affiliateUrl: "https://www.amazon.com/dp/B07Z8L34N1?tag=auxilick-20",
-        clicks: 76
-      },
-      {
-        id: 106,
-        title: "Chunky Knit Chenille Blanket for Living Room",
-        category: "Home & Kitchen",
-        price: "$49.99",
-        badge: "Cozy Aesthetic",
-        description: "Ultra-soft heavyweight chenille knit throw that stays lint-free and feels luxurious on the couch.",
-        img: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=700&q=80",
-        affiliateUrl: "https://www.amazon.com/dp/B07P8M5TXX?tag=auxilick-20",
-        clicks: 63
-      },
-      {
-        id: 107,
-        title: "Oversized Pure Linen Casual Button-Down Shirt",
-        category: "Fashion & Style",
-        price: "$32.00",
-        badge: "Top Rated",
-        description: "Airy relaxed-fit organic linen staple for layering over summer outfits or minimal clean aesthetics.",
-        img: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=700&q=80",
-        affiliateUrl: "https://www.amazon.com/dp/B094R8HZZY?tag=auxilick-20",
-        clicks: 52
-      },
-      {
-        id: 108,
-        title: "Precision Matte Black Gooseneck Pour-Over Kettle",
-        category: "Home & Kitchen",
-        price: "$54.95",
-        badge: "Coffee Bar Staple",
-        description: "Quick-boil electric stainless steel kettle with digital degree-by-degree temperature regulation.",
-        img: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80",
-        affiliateUrl: "https://www.amazon.com/dp/B0892BQQ55?tag=auxilick-20",
-        clicks: 89
-      }
-    ];
+    // ---------- SUPABASE SETTINGS (paste yours from Supabase > Project Settings > API) ----------
+    const SUPABASE_URL = "https://sdwdwttrpausuqfxdhva.supabase.co/rest/v1/";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkd2R3dHRycGF1c3VxZnhkaHZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NTAyMDIsImV4cCI6MjEwODIyNjIwMn0.OHMrJGaF4E_C8Ih6d3Pvr2PTgAjsScdVk_ajWBbPixY";
+    const CONFIGURED = !SUPABASE_URL.startsWith("YOUR_");
+    const sb = CONFIGURED ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-    // Local Storage Keys
-    const STORAGE_KEY_PRODUCTS = "auxilick_products_db_v1";
-    const STORAGE_KEY_VISITS = "auxilick_visits_db_v1";
-    const MASTER_ADMIN_PIN = "auxilick2026";
+    // database row <-> app object
+    const fromRow = r => ({ id: r.id, slug: r.slug, title: r.title, category: r.category, price: r.price, badge: r.badge || '', description: r.description || '', img: r.img, affiliateUrl: r.affiliate_url, clicks: r.clicks || 0 });
+    const toRow = p => ({ slug: p.slug, title: p.title, category: p.category, price: p.price, badge: p.badge, description: p.description, img: p.img, affiliate_url: p.affiliateUrl, clicks: p.clicks || 0 });
+    function uniqueSlug(base) { let s = base, n = 2; while (products.some(p => p.slug === s)) { s = base + '-' + n++; } return s; }
 
     // State Variables
     let products = [];
@@ -689,45 +599,35 @@
       }, 2800);
     }
 
-    // 1. DATA INITIALIZATION
-    function initData() {
-      // Products
-      const savedProds = localStorage.getItem(STORAGE_KEY_PRODUCTS);
-      if (savedProds) {
-        try {
-          products = JSON.parse(savedProds);
-        } catch (e) {
-          products = DEFAULT_PRODUCTS;
-        }
-      } else {
-        products = DEFAULT_PRODUCTS;
-        persistProducts();
+    // 1. DATA LOADING (from Supabase)
+    function persistProducts() {}  // no longer needed, kept so old calls do nothing
+
+    async function initData() {
+      if (!CONFIGURED) { showToast('Add your Supabase URL and key in the file first', 'ph-warning'); return; }
+      const { data, error } = await sb.from('products').select('*').order('created_at', { ascending: false });
+      if (error) { console.error(error); showToast('Could not load products', 'ph-warning'); return; }
+      products = data.map(fromRow);
+      if (!sessionStorage.getItem('aux_visit')) {           // count one visit per browser session
+        sessionStorage.setItem('aux_visit', '1');
+        await sb.rpc('increment_visits');
       }
-
-      // Traffic Visits
-      const savedVisits = localStorage.getItem(STORAGE_KEY_VISITS);
-      siteVisits = savedVisits ? parseInt(savedVisits, 10) : 180;
-      siteVisits += 1; // Count this session visit
-      localStorage.setItem(STORAGE_KEY_VISITS, siteVisits.toString());
-
-      ensureSlugs();
-      persistProducts();
+      const st = await sb.from('stats').select('visits').eq('id', 1).single();
+      siteVisits = st.data ? st.data.visits : 0;
+      const sess = await sb.auth.getSession();
+      isAdminUnlocked = !!(sess.data && sess.data.session);
     }
 
-    function persistProducts() {
-      localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
+    function recordClick(item) {
+      item.clicks = (item.clicks || 0) + 1;
+      if (CONFIGURED) sb.rpc('increment_clicks', { p_slug: item.slug });
     }
 
     // Outbound link tracker
     function triggerAmazonOutbound(productId, targetUrl) {
       const item = products.find(p => p.id === productId);
       if (item) {
-        item.clicks = (item.clicks || 0) + 1;
-        persistProducts();
-        if (isAdminUnlocked) {
-          updateAdminDashboardStats();
-          renderAdminTable();
-        }
+        recordClick(item);
+        if (isAdminUnlocked) { updateAdminDashboardStats(); renderAdminTable(); }
       }
       window.open(targetUrl, '_blank', 'noopener,noreferrer');
     }
@@ -927,17 +827,19 @@
 
     document.getElementById('cancelAuthBtn').addEventListener('click', closeSecretAuth);
 
-    // Form unlock
-    document.getElementById('secretAuthForm').addEventListener('submit', (e) => {
+    // Form unlock (real login through Supabase)
+    document.getElementById('secretAuthForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (secretPinInput.value.trim() === MASTER_ADMIN_PIN) {
-        isAdminUnlocked = true;
-        closeSecretAuth();
-        openAdminDashboard();
-        showToast("auxilick Admin Console unlocked");
-      } else {
-        authErrorMsg.classList.remove('hidden');
-      }
+      if (!CONFIGURED) { showToast('Add your Supabase URL and key first', 'ph-warning'); return; }
+      const { error } = await sb.auth.signInWithPassword({
+        email: document.getElementById('adminEmailInput').value.trim(),
+        password: secretPinInput.value
+      });
+      if (error) { authErrorMsg.classList.remove('hidden'); return; }
+      isAdminUnlocked = true;
+      closeSecretAuth();
+      openAdminDashboard();
+      showToast("auxilick Admin Console unlocked");
     });
 
     function openAdminDashboard() {
@@ -1133,43 +1035,35 @@
     document.getElementById('closeProductEditorBtn').addEventListener('click', closeProductEditor);
     document.getElementById('cancelProductEditorBtn').addEventListener('click', closeProductEditor);
 
-    productEditorForm.addEventListener('submit', (e) => {
+    productEditorForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!isAdminUnlocked) { showToast('Please sign in first', 'ph-warning'); return; }
       const idVal = document.getElementById('editProductId').value;
-      const title = document.getElementById('fieldTitle').value.trim();
-      const category = document.getElementById('fieldCategory').value.trim();
-      const price = document.getElementById('fieldPrice').value.trim();
-      const badge = document.getElementById('fieldBadge').value.trim();
-      const clicks = parseInt(document.getElementById('fieldClicks').value, 10) || 0;
-      const img = document.getElementById('fieldImage').value.trim();
-      const affiliateUrl = document.getElementById('fieldAffiliateUrl').value.trim();
-      const desc = document.getElementById('fieldDesc').value.trim();
+      const f = {
+        title: document.getElementById('fieldTitle').value.trim(),
+        category: document.getElementById('fieldCategory').value.trim(),
+        price: document.getElementById('fieldPrice').value.trim(),
+        badge: document.getElementById('fieldBadge').value.trim(),
+        clicks: parseInt(document.getElementById('fieldClicks').value, 10) || 0,
+        img: document.getElementById('fieldImage').value.trim(),
+        affiliateUrl: document.getElementById('fieldAffiliateUrl').value.trim(),
+        description: document.getElementById('fieldDesc').value.trim()
+      };
 
       if (idVal) {
-        const id = parseInt(idVal, 10);
-        const index = products.findIndex(p => p.id === id);
-        if (index !== -1) {
-          products[index] = { ...products[index], title, category, price, badge, clicks, img, affiliateUrl, description: desc };
-          showToast("Product updated successfully");
-        }
+        const old = products.find(p => p.id === parseInt(idVal, 10));
+        const { error } = await sb.from('products').update(toRow({ ...old, ...f })).eq('id', old.id);
+        if (error) { console.error(error); showToast('Save failed', 'ph-warning'); return; }
+        Object.assign(old, f);
+        showToast("Product updated successfully");
       } else {
-        const newItem = {
-          id: Date.now(),
-          title,
-          category,
-          price,
-          badge,
-          clicks,
-          img,
-          affiliateUrl,
-          description: desc
-        };
-        products.unshift(newItem);
-        ensureSlugs();
+        const slug = uniqueSlug(slugify(f.title));
+        const { data, error } = await sb.from('products').insert(toRow({ ...f, slug })).select().single();
+        if (error) { console.error(error); showToast('Save failed', 'ph-warning'); return; }
+        products.unshift(fromRow(data));
         showToast("New product added to auxilick feed");
       }
 
-      persistProducts();
       closeProductEditor();
       updateAdminDashboardStats();
       renderAdminTable();
@@ -1177,29 +1071,28 @@
       renderPinsGrid();
     });
 
-    function deleteProduct(id) {
-      if (confirm("Delete this product from your storefront catalog?")) {
-        products = products.filter(p => p.id !== id);
-        persistProducts();
-        updateAdminDashboardStats();
-        renderAdminTable();
-        renderCategories();
-        renderPinsGrid();
-        showToast("Product deleted");
-      }
+    async function deleteProduct(id) {
+      if (!confirm("Delete this product from your storefront catalog?")) return;
+      const { error } = await sb.from('products').delete().eq('id', id);
+      if (error) { console.error(error); showToast('Delete failed', 'ph-warning'); return; }
+      products = products.filter(p => p.id !== id);
+      updateAdminDashboardStats();
+      renderAdminTable();
+      renderCategories();
+      renderPinsGrid();
+      showToast("Product deleted");
     }
 
     // Reset analytics
-    document.getElementById('btnResetAnalytics').addEventListener('click', () => {
-      if (confirm("Reset total visits and outbound Amazon click counts?")) {
-        siteVisits = 1;
-        localStorage.setItem(STORAGE_KEY_VISITS, '1');
-        products.forEach(p => p.clicks = 0);
-        persistProducts();
-        updateAdminDashboardStats();
-        renderAdminTable();
-        showToast("Analytics counters reset");
-      }
+    document.getElementById('btnResetAnalytics').addEventListener('click', async () => {
+      if (!confirm("Reset total visits and outbound Amazon click counts?")) return;
+      await sb.from('products').update({ clicks: 0 }).gte('id', 0);
+      await sb.from('stats').update({ visits: 0 }).eq('id', 1);
+      siteVisits = 0;
+      products.forEach(p => p.clicks = 0);
+      updateAdminDashboardStats();
+      renderAdminTable();
+      showToast("Analytics counters reset");
     });
 
     // Export Catalog JSON
@@ -1254,13 +1147,7 @@
       renderPinsGrid();
     });
 
-    // Copy the whole catalog as code, to paste over DEFAULT_PRODUCTS in this file before you upload it
-    document.getElementById('btnCopyCode').addEventListener('click', () => {
-      const clean = products.map(p => ({ ...p, clicks: 0 }));
-      copyText('const DEFAULT_PRODUCTS = ' + JSON.stringify(clean, null, 2) + ';', 'Publish code copied');
-    });
-
-    // 9. SINGLE PRODUCT PAGE
+        // 9. SINGLE PRODUCT PAGE
     function renderProductPage(slug) {
       const page = document.getElementById('productPage');
       ['heroSection', 'feedMain', 'categoryContainer', 'searchWrap'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -1308,22 +1195,23 @@
       `;
 
       document.getElementById('ppCta').addEventListener('click', () => {
-        item.clicks = (item.clicks || 0) + 1;
-        persistProducts();
+        recordClick(item);
       });
       window.scrollTo(0, 0);
     }
 
     // BOOTSTRAP
-    initData();
-    const requestedProduct = new URLSearchParams(window.location.search).get('p');
-    if (requestedProduct) {
-      renderProductPage(requestedProduct);   // link like  yoursite.com/?p=product-name
-    } else {
-      renderCategories();
-      renderPinsGrid();
-    }
-    checkUrlForAdminTrigger();
+    (async () => {
+      await initData();
+      const requestedProduct = new URLSearchParams(window.location.search).get('p');
+      if (requestedProduct) {
+        renderProductPage(requestedProduct);   // link like  yoursite.com/?p=product-name
+      } else {
+        renderCategories();
+        renderPinsGrid();
+      }
+      checkUrlForAdminTrigger();
+    })();
   </script>
 </body>
 </html>
