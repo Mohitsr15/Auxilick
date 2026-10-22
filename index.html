@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="p:domain_verify" 
+    content="cb9b0cf7100c8648af950d8df6b232ef"/>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>auxilick — Aesthetic Pinterest Finds & Deals</title>
@@ -9,7 +11,7 @@
   <!-- Supabase client (database + login) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <!-- Phosphor Icons -->
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script defer src="https://unpkg.com/@phosphor-icons/web"></script>
   <!-- Inter Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -164,6 +166,7 @@
 
   <!-- 5. FOOTER -->
   <footer class="bg-white border-t border-stone-200 mt-12 py-8 text-stone-500 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 text-right"><a href="#" onclick="promptSecretAuth();return false;" class="text-stone-400 hover:text-stone-700 underline">Admin login</a></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center space-y-3">
       <div class="flex items-center justify-center gap-2 font-black text-stone-900 text-base">
         <div class="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center text-xs">
@@ -535,8 +538,9 @@
     // ---------- SUPABASE SETTINGS (paste yours from Supabase > Project Settings > API) ----------
     const SUPABASE_URL = "https://sdwdwttrpausuqfxdhva.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkd2R3dHRycGF1c3VxZnhkaHZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NTAyMDIsImV4cCI6MjEwODIyNjIwMn0.OHMrJGaF4E_C8Ih6d3Pvr2PTgAjsScdVk_ajWBbPixY";
-    const CONFIGURED = !SUPABASE_URL.startsWith("YOUR_");
-    const sb = CONFIGURED ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    const CONFIGURED = !SUPABASE_URL.startsWith("YOUR_") && !SUPABASE_ANON_KEY.startsWith("YOUR_");
+    let sb = null;
+    try { if (CONFIGURED) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch (e) { console.error('Supabase failed to start', e); }
 
     // database row <-> app object
     const fromRow = r => ({ id: r.id, slug: r.slug, title: r.title, category: r.category, price: r.price, badge: r.badge || '', description: r.description || '', img: r.img, affiliateUrl: r.affiliate_url, clicks: r.clicks || 0 });
@@ -602,19 +606,52 @@
     // 1. DATA LOADING (from Supabase)
     function persistProducts() {}  // no longer needed, kept so old calls do nothing
 
-    async function initData() {
-      if (!CONFIGURED) { showToast('Add your Supabase URL and key in the file first', 'ph-warning'); return; }
+    // Speed: show saved products instantly, then refresh them from the database in the background
+    function saveCache() { try { localStorage.setItem('aux_cache', JSON.stringify(products)); } catch (e) {} }
+
+    function rerenderAll() {
+      const p = new URLSearchParams(window.location.search).get('p');
+      if (p) { renderProductPage(p); } else { renderCategories(); renderPinsGrid(); }
+      if (isAdminUnlocked) { updateAdminDashboardStats(); renderAdminTable(); }
+    }
+
+    async function fetchProducts() {
       const { data, error } = await sb.from('products').select('*').order('created_at', { ascending: false });
-      if (error) { console.error(error); showToast('Could not load products', 'ph-warning'); return; }
+      if (error) { console.error(error); showToast('Could not load products', 'ph-warning'); return false; }
       products = data.map(fromRow);
-      if (!sessionStorage.getItem('aux_visit')) {           // count one visit per browser session
-        sessionStorage.setItem('aux_visit', '1');
-        await sb.rpc('increment_visits');
+      saveCache();
+      return true;
+    }
+
+    // Visits, stats and login status load in the background so they never delay the page
+    async function loadExtras() {
+      try {
+        if (!sessionStorage.getItem('aux_visit')) {
+          sessionStorage.setItem('aux_visit', '1');
+          sb.rpc('increment_visits');
+        }
+        const [st, sess] = await Promise.all([
+          sb.from('stats').select('visits').eq('id', 1).single(),
+          sb.auth.getSession()
+        ]);
+        siteVisits = st.data ? st.data.visits : 0;
+        isAdminUnlocked = !!(sess.data && sess.data.session);
+      } catch (e) { console.error(e); }
+    }
+
+    async function initData() {
+      if (!CONFIGURED || !sb) { showToast('Add your Supabase URL and key in the file first', 'ph-warning'); return; }
+      let cached = null;
+      try { cached = JSON.parse(localStorage.getItem('aux_cache') || 'null'); } catch (e) {}
+      loadExtras();
+      if (cached && cached.length) {
+        products = cached;                     // instant first paint
+        fetchProducts().then(ok => {           // then refresh quietly
+          if (ok && JSON.stringify(products) !== JSON.stringify(cached)) rerenderAll();
+        });
+        return;
       }
-      const st = await sb.from('stats').select('visits').eq('id', 1).single();
-      siteVisits = st.data ? st.data.visits : 0;
-      const sess = await sb.auth.getSession();
-      isAdminUnlocked = !!(sess.data && sess.data.session);
+      await fetchProducts();                   // first ever visit: must wait for data
     }
 
     function recordClick(item) {
@@ -832,7 +869,7 @@
       e.preventDefault();
       const showErr = (m) => { authErrorMsg.textContent = m; authErrorMsg.classList.remove('hidden'); };
       authErrorMsg.classList.add('hidden');
-      if (!CONFIGURED) { showErr('Supabase URL and key are not filled in this file.'); return; }
+      if (!CONFIGURED || !sb) { showErr('Supabase is not set up in this file: the URL or key is missing, or the Supabase library did not load.'); return; }
       try {
         const { error } = await sb.auth.signInWithPassword({
           email: document.getElementById('adminEmailInput').value.trim(),
@@ -1073,6 +1110,7 @@
 
       closeProductEditor();
       updateAdminDashboardStats();
+      saveCache();
       renderAdminTable();
       renderCategories();
       renderPinsGrid();
@@ -1084,6 +1122,7 @@
       if (error) { console.error(error); showToast('Delete failed', 'ph-warning'); return; }
       products = products.filter(p => p.id !== id);
       updateAdminDashboardStats();
+      saveCache();
       renderAdminTable();
       renderCategories();
       renderPinsGrid();
@@ -1209,7 +1248,7 @@
 
     // BOOTSTRAP
     (async () => {
-      await initData();
+      try { await initData(); } catch (err) { console.error('Load error', err); showToast('Could not reach the database', 'ph-warning'); }
       const requestedProduct = new URLSearchParams(window.location.search).get('p');
       if (requestedProduct) {
         renderProductPage(requestedProduct);   // link like  yoursite.com/?p=product-name
