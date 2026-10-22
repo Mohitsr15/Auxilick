@@ -533,7 +533,7 @@
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 
     // ---------- SUPABASE SETTINGS (paste yours from Supabase > Project Settings > API) ----------
-    const SUPABASE_URL = "https://sdwdwttrpausuqfxdhva.supabase.co/rest/v1/"";
+    const SUPABASE_URL = "https://sdwdwttrpausuqfxdhva.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkd2R3dHRycGF1c3VxZnhkaHZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NTAyMDIsImV4cCI6MjEwODIyNjIwMn0.OHMrJGaF4E_C8Ih6d3Pvr2PTgAjsScdVk_ajWBbPixY";
     const CONFIGURED = !SUPABASE_URL.startsWith("YOUR_");
     const sb = CONFIGURED ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
